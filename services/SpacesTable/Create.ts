@@ -3,31 +3,35 @@ import { v4 } from 'uuid';
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 
-
+const TABLE_NAME = process.env.TABLE_NAME;
 const dbClient = new DynamoDB.DocumentClient();
 
-const handler =async (event:APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+const handler = async (event:APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
 
-    const item = {
-        spaceId: v4()
-    }
+    // const item = {
+    //     spaceId: v4(),
+    // }
     
+    const item = typeof event.body === 'object' ? event.body : JSON.parse(event.body);
+    item.spaceId = v4();
+
     const result: APIGatewayProxyResult = {
         statusCode: 200,
-        body: 'Hello from DynamoDB',
+        body: `Created item with id: ${item.spaceId}`,
     }
 
     try{
         await dbClient.put({
-            TableName: 'SpacesTable',
+            TableName: TABLE_NAME!,
             Item: item,
         }).promise();
+        return result;
     } catch (error) {
-        result.body = (error as Error).message;
-        result.statusCode = 500;
+        return {
+            body: (error as Error).message,
+            statusCode: 500,
+        }
     }
-
-    return result;
 }
 
 export {handler};
