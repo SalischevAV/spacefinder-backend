@@ -3,7 +3,16 @@
 GET {{endpoint}}/hello/
 ###
 
-POSR {{endpoint}}/spaces/
+GET {{endpoint}}/spaces/
+###
+
+GET {{endpoint}}/spaces?spaceId=
+###
+
+GET {{endpoint}}/spaces?location=London
+###
+
+POST {{endpoint}}/spaces/
 Content-Type: application/json
 
 {
