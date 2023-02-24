@@ -16,7 +16,9 @@
                 "${relativeFile}"
             ],
             "env": {
-                "AWS_REGION": "eu-west-3"
+                "AWS_REGION": "eu-west-3",
+                "TABLE_NAME": "SpacesTable",
+                "PRIMARY_KEY": "spaceId"
                 //put here session token  and secret access key
             }
 
