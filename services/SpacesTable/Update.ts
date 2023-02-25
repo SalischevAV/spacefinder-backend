@@ -38,7 +38,11 @@ const handler = async (event:APIGatewayProxyEvent, context: Context): Promise<AP
                 body: JSON.stringify(updateResult),
             }
         } catch(error){
-            console.log((error as Error).message);
+            const updateError = (error as Error);
+            return {
+                statusCode: 500,
+                body: updateError.message,
+            }
         }
     }
 
