@@ -11,7 +11,7 @@ GET {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
 GET {{endpoint}}/spaces?location=Vienna
 ###
 
-PUT {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
+PUT {{endpoint}}/spaces?spaceId=ae2eb0ea-e9a8-4fbc-8c73-8d9616bae186
 Content-Type: application/json
 
 {
