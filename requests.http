@@ -6,17 +6,27 @@ GET {{endpoint}}/hello/
 GET {{endpoint}}/spaces/
 ###
 
-GET {{endpoint}}/spaces?spaceId=
+GET {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
 ###
 
-GET {{endpoint}}/spaces?location=London
+PUT {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
+Content-Type: application/json
+
+{
+    "location": "Vienna",
+    "name": "Vienna better than London",
+    "updated": "true"
+}
+###
+
+GET {{endpoint}}/spaces?location=Vienna
 ###
 
 POST {{endpoint}}/spaces/
 Content-Type: application/json
 
 {
-    "location": "London",
-    "name": "Best location"
+    "location": "Kharkiv",
+    "name": "location"
 }
 ###
