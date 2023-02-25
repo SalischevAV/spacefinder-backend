@@ -34,7 +34,7 @@ const handler = async (event:APIGatewayProxyEvent, context: Context): Promise<AP
                 ReturnValues: 'UPDATED_NEW'
             }).promise();
             return {
-                statusCode: 200,
+                statusCode: 201,
                 body: JSON.stringify(updateResult),
             }
         } catch(error){
