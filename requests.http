@@ -8,6 +8,8 @@ GET {{endpoint}}/spaces/
 
 GET {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
 ###
+GET {{endpoint}}/spaces?location=Vienna
+###
 
 PUT {{endpoint}}/spaces?spaceId=3b4373aa-b4ab-431c-8c25-8748d87f9e8c
 Content-Type: application/json
@@ -19,14 +21,13 @@ Content-Type: application/json
 }
 ###
 
-GET {{endpoint}}/spaces?location=Vienna
-###
-
 POST {{endpoint}}/spaces/
 Content-Type: application/json
 
 {
-    "location": "Kharkiv",
+    "location": "Lviv",
     "name": "location"
 }
 ###
+
+DELETE {{endpoint}}/spaces/?spaceId=a3c986d7-1615-4599-a3e4-58324b8130a9

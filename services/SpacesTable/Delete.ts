@@ -8,37 +8,30 @@ const dbClient = new DynamoDB.DocumentClient();
 const handler = async (event:APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
     const result: APIGatewayProxyResult = {
         statusCode: 200,
-        body: `Hello from update Lambda`,
+        body: `Hello from delete Lambda`,
     }
 
-    const requestBody = typeof event.body === 'object' ? event.body : JSON.parse(event.body);
     const spaceId = event.queryStringParameters?.[PRIMARY_KEY]
 
-    if(requestBody && spaceId){
+    if(spaceId){
         try{
-
-            const requestBodyKey = Object.keys(requestBody)[0];
-            const requestBodyValue = requestBody[requestBodyKey];
-            const updateResult = await dbClient.update({
+            const deleteResult = await dbClient.delete({
                 TableName: TABLE_NAME,
                 Key: {
-                    [PRIMARY_KEY]: spaceId
-                },
-                UpdateExpression: 'set #zzzNew = :new',
-                ExpressionAttributeValues:{
-                    ':new': requestBodyValue
-                },
-                ExpressionAttributeNames:{
-                    '#zzzNew': requestBodyKey
-                },
-                ReturnValues: 'UPDATED_NEW'
+                    [PRIMARY_KEY]: spaceId,
+                }
             }).promise();
             return {
-                statusCode: 201,
-                body: JSON.stringify(updateResult),
+                statusCode: 204,
+                body: JSON.stringify(deleteResult),
             }
+
         } catch(error){
-            console.log((error as Error).message);
+            const deleteError = (error as Error);
+            return {
+                statusCode: 500,
+                body: deleteError.message,
+            }
         }
     }
 
