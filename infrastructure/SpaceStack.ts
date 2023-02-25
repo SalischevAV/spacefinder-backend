@@ -11,7 +11,8 @@ import { GenericTable } from './GenericTable';
 
 export class SpaceStack extends Stack {
 
-    private api = new RestApi(this, 'SpaceAPI'); //define API
+    //define API Gateway
+    private api = new RestApi(this, 'SpaceAPI'); 
  
     //create DynamoDB table
     // private spacesTable = new GenericTable(
