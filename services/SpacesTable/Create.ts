@@ -36,4 +36,4 @@ const handler = async (event:APIGatewayProxyEvent, context: Context): Promise<AP
     }
 }
 
-export {handler};
+export { handler };
