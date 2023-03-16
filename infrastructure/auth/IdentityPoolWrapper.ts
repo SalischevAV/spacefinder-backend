@@ -9,7 +9,12 @@ export class IdentityPoolWrapper{
     private unAuthenticatedRole: Role;
     public adminRole: Role;
 
-    constructor(private scope: Construct, private userPool: UserPool, private userPoolClient: UserPoolClient) {
+    constructor(
+        private scope: Construct,
+        private userPool: UserPool, 
+        private userPoolClient: UserPoolClient,
+        private photoBucketArn: string,
+        ) {
         this.initialize();
     }
 
@@ -76,9 +81,10 @@ export class IdentityPoolWrapper{
         this.adminRole.addToPolicy(new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [
-                's3:ListAllMyBuckets'
+                's3:Put',
+                's3:PutAcl',
             ],
-            resources: ['*']
+            resources: [this.photoBucketArn]
         }))
     }
 

@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@aws-amplify/auth": "^5.1.10",
-    "aws-amplify": "^5.0.16",
+    "aws-amplify": "^5.0.19",
     "aws-sdk": "^2.1321.0"
   }
 }
