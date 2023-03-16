@@ -1,21 +1,29 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyEventQueryStringParameters, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { addCorsHeader } from '../Shared/Utils';
 
 const TABLE_NAME = process.env.TABLE_NAME;
 const PRIMARY_KEY = process.env.PRIMARY_KEY || '';
 const dbClient = new DynamoDB.DocumentClient();
 
 const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+    const result: APIGatewayProxyResult = {
+        statusCode: 200,
+        body: ''
+    }
+    addCorsHeader(result);
 
     try {
         if (event.queryStringParameters) {
             if (PRIMARY_KEY in event.queryStringParameters) {
                 return {
+                    ...result,
                     statusCode: 200,
                     body: await queryWithPrimaryPartition(event.queryStringParameters)
                 }
             } else {
                 return {
+                    ...result,
                     statusCode: 200,
                     body: await queryWithSecondaryPartition(event.queryStringParameters)
                 }
@@ -23,12 +31,14 @@ const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<A
 
         } else {
             return {
+                ...result,
                 statusCode: 200,
                 body: await scanTable()
             };
         }
     } catch (error) {
         return {
+            ...result,
             body: (error as Error).message,
             statusCode: 500,
         }

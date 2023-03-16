@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Fn, Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Code, Function as LambdaFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { AuthorizationType, LambdaIntegration, MethodOptions, RestApi } from 'aws-cdk-lib/aws-apigateway';
@@ -9,13 +9,18 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 import { AuthorizerWrapper } from './auth/AuthorizerWrapper';
 import { GenericTable } from './GenericTable';
+import { Bucket, HttpMethods } from 'aws-cdk-lib/aws-s3';
 
 export class SpaceStack extends Stack {
 
     //define API Gateway
     private api = new RestApi(this, 'SpaceAPI'); 
 
+    //define authorizer
     private authorizer: AuthorizerWrapper;
+    
+    private suffix: string;
+    private spacePhotosBucket: Bucket;
 
     //create DynamoDB table
     // private spacesTable = new GenericTable(
@@ -36,7 +41,9 @@ export class SpaceStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        this.authorizer = new AuthorizerWrapper(this, this.api);
+        this.initializeSuffix();
+        this.initializeSpacePhotosBucket();
+        this.authorizer = new AuthorizerWrapper(this, this.api, `${this.spacePhotosBucket.bucketArn}/*`);
         
         //define lambda by aws-cdk-lib/aws-lambda
         const helloLambda = new LambdaFunction(this, 'helloLambda', {
@@ -80,5 +87,30 @@ export class SpaceStack extends Stack {
         spaceResource.addMethod('GET', this.spacesTable.readLambdaIntegration);
         spaceResource.addMethod('PUT', this.spacesTable.updateLambdaIntegration);
         spaceResource.addMethod('DELETE', this.spacesTable.deleteLambdaIntegration);
+    }
+
+    private initializeSuffix(){
+        const shortStackId = Fn.select(2, Fn.split('/', this.stackId));
+        const Suffix = Fn.select(4, Fn.split('-', shortStackId));
+        this.suffix = Suffix;
+    }
+
+    private initializeSpacePhotosBucket(){
+        this.spacePhotosBucket = new Bucket(this, 'spaces-photos', {
+            bucketName: `spaces-photos-${this.suffix}`,
+            cors: [{
+                allowedMethods: [
+                    HttpMethods.GET,
+                    HttpMethods.PUT,
+                    HttpMethods.HEAD,
+                ],
+                allowedOrigins: ['*'],
+                allowedHeaders: ['*'],
+            }]
+        })
+
+        new CfnOutput(this, 'space-photos-bucket-name', {
+            value: this.spacePhotosBucket.bucketName,
+        })
     }
 }
